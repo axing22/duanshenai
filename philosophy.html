@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>理念详情 - 段永平智慧问答</title>
+    <meta name="description" content="深度探索段永平的投资、教育、AI、企业经营理念，获得人生智慧指导">
+    
+    <!-- 字体引入 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    
+    <!-- 核心库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary-blue: #2C3E50;
+            --warm-white: #F8F9FA;
+            --elegant-gray: #6C757D;
+            --wisdom-gold: #D4AF37;
+            --nature-green: #28A745;
+            --warm-orange: #FD7E14;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--warm-white) 0%, #E8F4F8 100%);
+            color: var(--primary-blue);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .serif-font {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        .decorative-font {
+            font-family: 'ZCOOL XiaoWei', cursive;
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            backdrop-filter: blur(10px);
+            background: rgba(248, 249, 250, 0.9);
+            border-bottom: 1px solid rgba(44, 62, 80, 0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--wisdom-gold);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--wisdom-gold);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* 标签页样式 */
+        .tab-button {
+            padding: 12px 24px;
+            border-radius: 25px;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--elegant-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .tab-button:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--wisdom-gold);
+        }
+        
+        .tab-button.active {
+            background: var(--wisdom-gold);
+            color: white;
+            border-color: var(--wisdom-gold);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        /* 内容卡片样式 */
+        .philosophy-content {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(44, 62, 80, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            min-height: 500px;
+        }
+        
+        .principle-card {
+            background: rgba(248, 249, 250, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(44, 62, 80, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .principle-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--wisdom-gold);
+        }
+        
+        .principle-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 16px;
+        }
+        
+        /* 滚动动画 */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .fade-in-up.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 图表容器 */
+        .chart-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 背景动画 */
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.2;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .tab-button {
+                padding: 8px 16px;
+                font-size: 14px;
+                margin: 4px;
+            }
+            
+            .philosophy-content {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+        
+        /* 收藏按钮 */
+        .favorite-btn {
+            background: none;
+            border: none;
+            color: var(--elegant-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+        
+        .favorite-btn:hover {
+            color: #ff6b6b;
+            transform: scale(1.1);
+        }
+        
+        .favorite-btn.active {
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景动画画布 -->
+    <canvas id="background-canvas"></canvas>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar fixed top-0 w-full z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold text-lg">智</span>
+                </div>
+                <h1 class="serif-font text-xl font-bold text-gray-800">段永平智慧问答</h1>
+            </div>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="nav-link text-gray-700 hover:text-yellow-600 font-medium">首页</a>
+                <a href="philosophy.html" class="nav-link text-yellow-600 font-medium">理念详情</a>
+                <a href="cases.html" class="nav-link text-gray-700 hover:text-yellow-600 font-medium">案例库</a>
+                <a href="about.html" class="nav-link text-gray-700 hover:text-yellow-600 font-medium">关于</a>
+            </div>
+            
+            <!-- 移动端菜单按钮 -->
+            <button class="md:hidden p-2" id="mobile-menu-btn">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden mt-4 pb-4" id="mobile-menu">
+            <a href="index.html" class="block py-2 text-gray-700 hover:text-yellow-600">首页</a>
+            <a href="philosophy.html" class="block py-2 text-yellow-600">理念详情</a>
+            <a href="cases.html" class="block py-2 text-gray-700 hover:text-yellow-600">案例库</a>
+            <a href="about.html" class="block py-2 text-gray-700 hover:text-yellow-600">关于</a>
+        </div>
+    </nav>
+    
+    <!-- 主要内容区域 -->
+    <main class="pt-24 pb-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- 页面标题 -->
+            <div class="text-center mb-12 fade-in-up">
+                <h2 class="serif-font text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                    智慧理念
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    深度探索段永平在投资、教育、AI、企业经营等领域的人生智慧和哲学思考
+                </p>
+            </div>
+            
+            <!-- 标签页导航 -->
+            <div class="flex flex-wrap justify-center mb-8 fade-in-up" id="tab-navigation">
+                <!-- 标签页按钮将通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="philosophy-content p-8 md:p-12 fade-in-up" id="content-area">
+                <!-- 内容将通过JavaScript动态加载 -->
+            </div>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="mb-6">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">智</span>
+                    </div>
+                    <h4 class="serif-font text-xl font-bold">段永平智慧问答</h4>
+                </div>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    传承智慧，启发思考。基于段永平先生的投资、教育、AI、企业经营理念，
+                    为每一位追求成长的人提供智慧指导。
+                </p>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-6">
+                <p class="text-gray-500 text-sm">
+                    © 2025 段永平智慧问答系统. 致敬智慧，传承思想.
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 知识库数据
+        const wisdomData = {
+            "投资理念": {
+                "核心原则": [
+                    { principle: "做对的事情，把事情做对", explanation: "这是段永平最著名的理念之一。'做对的事情'指的是选择正确的方向和方法，'把事情做对'指的是在执行过程中追求 excellence。在投资中，这意味着要选择优秀的企业，并且在投资过程中保持理性和耐心。", icon: "🎯" },
+                    { principle: "投资自己懂的企业", explanation: "只投资自己真正理解的行业和企业。这意味着要深入研究企业的商业模式、竞争优势、财务状况等，只有真正懂了，才能做出正确的投资决策。", icon: "🔍" },
+                    { principle: "长期持有优秀公司", explanation: "一旦找到真正优秀的企业，就应该长期持有。时间是优秀公司的朋友，短期波动不应该影响长期投资的决心。", icon: "⏰" },
+                    { principle: "不要借钱投资", explanation: "投资应该使用闲钱，不应该借钱投资。借钱投资会增加心理压力，影响理性判断，容易导致错误决策。", icon: "💰" },
+                    { principle: "不要做空", explanation: "做空的潜在收益有限但风险无限，而且需要精准的时机判断。长期来看，做空很难获得持续的成功。", icon: "📈" },
+                    { principle: "不懂不做", explanation: "这是段永平投资理念的核心。对于自己不理解的投资标的，坚决不参与。宁可错过，不可做错。", icon: "🚫" }
+                ],
+                "估值方法": [
+                    { principle: "看企业的长期价值", explanation: "不要被短期的财务数据迷惑，要关注企业的长期竞争优势和可持续发展能力。真正的价值来自于企业未来的现金流折现。", icon: "💎" },
+                    { principle: "关注现金流", explanation: "现金流是企业的血液，是企业真实盈利能力的体现。要关注自由现金流，而不是会计利润。", icon: "💧" },
+                    { principle: "重视商业模式", explanation: "好的商业模式是企业长期成功的关键。要分析企业如何赚钱、竞争优势在哪里、是否具有护城河等。", icon: "🏗️" },
+                    { principle: "考虑竞争优势", explanation: "投资要找有护城河的企业。这种竞争优势可能是品牌、技术、规模效应、网络效应等，能够帮助企业抵御竞争。", icon: "🛡️" }
+                ],
+                "风险管理": [
+                    { principle: "安全边际", explanation: "买入价格要留有足够的安全边际。即使对企业很了解，也要考虑犯错的可能性，安全边际可以提供保护。", icon: "⚓" },
+                    { principle: "分散投资", explanation: "不要把所有鸡蛋放在一个篮子里。但分散要适度，过度分散会影响收益。要在集中和分散之间找到平衡。", icon: "🌐" },
+                    { principle: "耐心等待", explanation: "好的投资机会需要等待。不要因为害怕错过而匆忙投资，也不要因为短期波动而轻易卖出。", icon: "🕐" },
+                    { principle: "避免情绪化决策", explanation: "投资要保持理性，避免被贪婪和恐惧左右。要有自己的投资逻辑，不随波逐流。", icon: "🧠" }
+                ]
+            },
+            "企业经营": {
+                "企业文化": [
+                    { principle: "本分文化", explanation: "这是段永平最强调的企业文化。本分就是诚实守信，不欺骗、不作假，专注于做好自己的事情，不投机取巧。", icon: "🌱" },
+                    { principle: "用户导向", explanation: "一切从用户的角度出发，思考如何为用户创造价值。用户满意是企业长期成功的基础。", icon: "👥" },
+                    { principle: "长期主义", explanation: "不追求短期的利益，而是着眼于长期的发展。要为用户、员工、社会创造长期价值。", icon: "🌳" },
+                    { principle: "诚信第一", explanation: "诚信是做人做事的根本。对客户诚信、对员工诚信、对合作伙伴诚信、对社会诚信。", icon: "🤝" }
+                ],
+                "管理哲学": [
+                    { principle: "做对的事情", explanation: "在战略层面要选择正确的方向，在战术层面要采用正确的方法。方向比努力更重要。", icon: "🧭" },
+                    { principle: "把事情做对", explanation: "在正确的方向上，要追求执行的质量。要持续改进，不断优化流程和方法。", icon: "⚙️" },
+                    { principle: "以人为本", explanation: "重视员工的价值，为员工创造良好的工作环境和发展机会。员工是企业最重要的资产。", icon: "❤️" },
+                    { principle: "持续学习", explanation: "要保持开放的心态，不断学习和改进。市场在变化，技术在发展，企业也要与时俱进。", icon: "📚" }
+                ],
+                "创新理念": [
+                    { principle: "用户需求驱动", explanation: "创新要源于用户的真实需求，而不是为了创新而创新。要解决用户的实际问题，为用户创造价值。", icon: "🎯" },
+                    { principle: "技术服务于人", explanation: "技术是实现目标的工具，最终要服务于人。要保持简单实用的理念，不要让技术复杂化。", icon: "🔧" },
+                    { principle: "简单实用", explanation: "产品设计要追求简单实用，避免不必要的复杂性。简单的产品更容易被用户接受和使用。", icon: "✨" },
+                    { principle: "持续改善", explanation: "创新不一定是颠覆性的，持续的改进和优化也是重要的创新。要不断反思和改进。", icon: "🔄" }
+                ]
+            },
+            "教育理念": {
+                "育儿观念": [
+                    { principle: "以身作则", explanation: "父母的行为是最好的教育。要通过自己的言行来影响孩子，而不是空洞的说教。", icon: "👨‍👩‍👧‍👦" },
+                    { principle: "培养独立思考", explanation: "要鼓励孩子独立思考，培养批判性思维能力。不要给孩子标准答案，而是要引导他们自己思考。", icon: "🧠" },
+                    { principle: "重视品德教育", explanation: "品德比能力更重要。要培养孩子的诚实、善良、责任感等品德，这些是立身之本。", icon: "💎" },
+                    { principle: "鼓励探索学习", explanation: "学习应该是主动探索的过程，而不是被动接受。要保护孩子的好奇心，鼓励他们探索未知。", icon: "🔍" }
+                ],
+                "学习方法": [
+                    { principle: "终身学习", explanation: "学习是一生的事情，不应该局限于学校教育。要保持学习的习惯，不断提升自己。", icon: "📖" },
+                    { principle: "实践出真知", explanation: "理论知识要通过实践来检验和深化。要在做中学，通过实践来真正理解和掌握知识。", icon: "🛠️" },
+                    { principle: "跨界思考", explanation: "要打破学科界限，从多个角度思考问题。不同领域的知识可以相互启发，产生新的见解。", icon: "🌉" },
+                    { principle: "反思总结", explanation: "要定期反思和总结，思考哪些做得好，哪些可以改进。反思是进步的重要方式。", icon: "📝" }
+                ]
+            },
+            "AI思考": {
+                "技术态度": [
+                    { principle: "AI是工具", explanation: "AI本质上是一种工具，应该为人类服务。要保持工具理性，不要过度神化或恐惧AI。", icon: "🛠️" },
+                    { principle: "服务于人", explanation: "AI的发展应该以人为本，要关注如何改善人类生活，而不是替代人类。", icon: "🤖" },
+                    { principle: "保持人性", explanation: "在AI时代，更要重视人性的价值。情感、创造力、同理心等是人类独有的特质。", icon: "❤️" },
+                    { principle: "谨慎发展", explanation: "AI技术要负责任地发展，要考虑伦理和安全问题。要在创新和规范之间找到平衡。", icon: "⚖️" }
+                ],
+                "应用理念": [
+                    { principle: "提高效率", explanation: "AI应该用来提高工作效率，让人从重复性劳动中解放出来，专注于更有创造性的工作。", icon: "⚡" },
+                    { principle: "改善生活", explanation: "AI应用要着眼于改善人们的生活质量，解决实际问题，让生活变得更美好。", icon: "🏠" },
+                    { principle: "保持简单", explanation: "AI产品要保持简单易用，不要让技术复杂性影响用户体验。简单才是美。", icon: "✨" },
+                    { principle: "关注用户", explanation: "AI应用要从用户需求出发，真正理解用户想要什么，而不是技术人员想做什么。", icon: "👤" }
+                ]
+            },
+            "人生哲学": {
+                "价值观": [
+                    { principle: "诚实正直", explanation: "诚实是做人做事的根本。要对自己诚实，对他人诚实，对社会诚实。正直的人才能获得长期的信任。", icon: "🎯" },
+                    { principle: "谦逊学习", explanation: "要保持谦逊的态度，承认自己的不足，虚心向他人学习。谦逊使人进步，骄傲使人落后。", icon: "📚" },
+                    { principle: "知足常乐", explanation: "要学会知足，珍惜已经拥有的。欲望是无止境的，过度的欲望会带来痛苦。知足常乐是智慧。", icon: "😊" },
+                    { principle: "利他精神", explanation: "要有利他之心，考虑他人的利益，为社会创造价值。利他也是利己，帮助他人就是帮助自己。", icon: "🤝" }
+                ],
+                "生活态度": [
+                    { principle: "简单生活", explanation: "生活要追求简单，减少不必要的物质欲望。简单的生活让人更专注于真正重要的事情。", icon: "🌱" },
+                    { principle: "珍惜当下", explanation: "要珍惜现在的时光，活在当下。不要过分担忧未来，也不要沉溺于过去，现在才是最重要的。", icon: "⏰" },
+                    { principle: "持续成长", explanation: "人生是一个不断成长的过程。要保持学习的习惯，不断提升自己，成为更好的人。", icon: "🌳" },
+                    { principle: "帮助他人", explanation: "在自己有能力的时候，要帮助他人。帮助他人不仅能给别人带来价值，也能让自己获得快乐。", icon: "❤️" }
+                ]
+            }
+        };
+
+        // 当前选中的分类
+        let currentCategory = '投资理念';
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+        });
+
+        function initializePage() {
+            // 初始化背景动画
+            initBackgroundAnimation();
+            
+            // 初始化标签页导航
+            initTabNavigation();
+            
+            // 初始化内容区域
+            initContentArea();
+            
+            // 初始化导航功能
+            initNavigation();
+            
+            // 初始化滚动动画
+            initScrollAnimations();
+            
+            // 检查URL参数
+            checkURLParams();
+        }
+
+        // 背景动画初始化
+        function initBackgroundAnimation() {
+            const canvas = document.getElementById('background-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            let time = 0;
+            
+            function drawBackground() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 创建粒子效果
+                for (let i = 0; i < 30; i++) {
+                    const x = (Math.sin(time * 0.01 + i) * 50) + (canvas.width / 2) + (i * 20);
+                    const y = (Math.cos(time * 0.008 + i) * 30) + (canvas.height / 2) + (i * 15);
+                    const size = Math.sin(time * 0.02 + i) * 2 + 3;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x % canvas.width, y % canvas.height, size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(212, 175, 55, ${0.1 + Math.sin(time * 0.01 + i) * 0.05})`;
+                    ctx.fill();
+                }
+                
+                time++;
+                requestAnimationFrame(drawBackground);
+            }
+            
+            drawBackground();
+        }
+
+        // 标签页导航初始化
+        function initTabNavigation() {
+            const container = document.getElementById('tab-navigation');
+            const categories = Object.keys(wisdomData);
+            
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.className = `tab-button ${category === currentCategory ? 'active' : ''}`;
+                button.textContent = category;
+                button.addEventListener('click', () => switchCategory(category));
+                container.appendChild(button);
+            });
+        }
+
+        // 切换分类
+        function switchCategory(category) {
+            currentCategory = category;
+            
+            // 更新标签页状态
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === category) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // 更新内容
+            updateContentArea(category);
+            
+            // 更新URL
+            const url = new URL(window.location);
+            url.searchParams.set('category', category);
+            window.history.replaceState({}, '', url);
+        }
+
+        // 内容区域初始化
+        function initContentArea() {
+            updateContentArea(currentCategory);
+        }
+
+        // 更新内容区域
+        function updateContentArea(category) {
+            const container = document.getElementById('content-area');
+            const categoryData = wisdomData[category];
+            
+            let html = `
+                <div class="mb-8">
+                    <h3 class="serif-font text-3xl font-bold text-gray-800 mb-4 text-center">${category}</h3>
+                    <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto">
+                        ${getCategoryDescription(category)}
+                    </p>
+                </div>
+            `;
+            
+            // 为每个子分类创建内容
+            Object.entries(categoryData).forEach(([subCategory, principles], index) => {
+                html += `
+                    <div class="mb-12 fade-in-up" style="animation-delay: ${index * 0.1}s">
+                        <h4 class="serif-font text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                            <span class="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-white text-sm mr-3">
+                                ${index + 1}
+                            </span>
+                            ${subCategory}
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            ${principles.map(principle => `
+                                <div class="principle-card p-6">
+                                    <div class="flex items-start justify-between mb-4">
+                                        <div class="principle-icon bg-gradient-to-br from-yellow-400 to-yellow-600 text-white">
+                                            ${principle.icon}
+                                        </div>
+                                        <button class="favorite-btn" onclick="toggleFavorite('${category}', '${subCategory}', '${principle.principle}')">
+                                            ♡
+                                        </button>
+                                    </div>
+                                    
+                                    <h5 class="serif-font text-lg font-bold text-gray-800 mb-3">
+                                        ${principle.principle}
+                                    </h5>
+                                    
+                                    <p class="text-gray-600 leading-relaxed">
+                                        ${principle.explanation}
+                                    </p>
+                                    
+                                    <div class="mt-4 flex items-center space-x-4">
+                                        <button class="text-sm text-yellow-600 hover:text-yellow-700 transition-colors" onclick="sharePrinciple('${principle.principle}')">
+                                            📤 分享
+                                        </button>
+                                        <button class="text-sm text-gray-500 hover:text-gray-700 transition-colors" onclick="copyPrinciple('${principle.principle}')">
+                                            📋 复制
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // 添加相关图表
+            html += `
+                <div class="fade-in-up">
+                    <h4 class="serif-font text-2xl font-bold text-gray-800 mb-6 text-center">
+                        ${category} - 核心理念分布
+                    </h4>
+                    <div class="chart-container">
+                        <div id="philosophy-chart" style="width: 100%; height: 400px;"></div>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            
+            // 初始化图表
+            setTimeout(() => {
+                initChart(category);
+            }, 100);
+        }
+
+        // 获取分类描述
+        function getCategoryDescription(category) {
+            const descriptions = {
+                "投资理念": "段永平的投资哲学强调'不懂不做'和长期价值投资，注重企业基本面分析和风险控制。",
+                "企业经营": "本分文化、用户导向、长期主义是段永平企业经营理念的核心，强调诚信和持续改进。",
+                "教育理念": "以身作则、培养独立思考能力、重视品德教育是段永平教育观念的重要组成部分。",
+                "AI思考": "AI是工具，应该服务于人，保持人性关怀，谨慎发展是段永平对AI技术的基本态度。",
+                "人生哲学": "诚实正直、谦逊学习、知足常乐、利他精神构成了段永平的人生价值观和生活态度。"
+            };
+            return descriptions[category] || "探索段永平的智慧理念，获得人生指导。";
+        }
+
+        // 初始化图表
+        function initChart(category) {
+            const chartDom = document.getElementById('philosophy-chart');
+            const myChart = echarts.init(chartDom);
+            
+            const categoryData = wisdomData[category];
+            const data = Object.entries(categoryData).map(([name, principles]) => ({
+                name: name,
+                value: principles.length
+            }));
+            
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'horizontal',
+                    bottom: 'bottom',
+                    textStyle: {
+                        color: '#6C757D'
+                    }
+                },
+                series: [
+                    {
+                        name: category,
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        center: ['50%', '45%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: '18',
+                                fontWeight: 'bold',
+                                color: '#2C3E50'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: data,
+                        color: ['#D4AF37', '#28A745', '#FD7E14', '#6C757D', '#2C3E50']
+                    }
+                ]
+            };
+            
+            myChart.setOption(option);
+            
+            // 响应式调整
+            window.addEventListener('resize', () => {
+                myChart.resize();
+            });
+        }
+
+        // 检查URL参数
+        function checkURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            
+            if (category && wisdomData[category]) {
+                switchCategory(category);
+            }
+        }
+
+        // 导航功能初始化
+        function initNavigation() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        }
+
+        // 滚动动画初始化
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.fade-in-up').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // 工具函数
+        function toggleFavorite(category, subCategory, principle) {
+            event.target.classList.toggle('active');
+            const isFavorite = event.target.classList.contains('active');
+            
+            // 这里可以实现收藏功能，比如保存到localStorage
+            let favorites = JSON.parse(localStorage.getItem('wisdom-favorites') || '[]');
+            
+            if (isFavorite) {
+                favorites.push({ category, subCategory, principle, timestamp: Date.now() });
+            } else {
+                favorites = favorites.filter(fav => 
+                    !(fav.category === category && fav.subCategory === subCategory && fav.principle === principle)
+                );
+            }
+            
+            localStorage.setItem('wisdom-favorites', JSON.stringify(favorites));
+            
+            // 显示反馈
+            showToast(isFavorite ? '已收藏' : '已取消收藏');
+        }
+
+        function sharePrinciple(principle) {
+            if (navigator.share) {
+                navigator.share({
+                    title: '段永平智慧理念',
+                    text: principle,
+                    url: window.location.href
+                });
+            } else {
+                copyToClipboard(principle);
+                showToast('已复制到剪贴板');
+            }
+        }
+
+        function copyPrinciple(principle) {
+            copyToClipboard(principle);
+            showToast('已复制到剪贴板');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).catch(() => {
+                // 降级方案
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 right-6 bg-yellow-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

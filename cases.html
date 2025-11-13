@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>案例库 - 段永平智慧问答</title>
+    <meta name="description" content="探索段永平理念在实际投资、教育、企业经营中的成功应用案例">
+    
+    <!-- 字体引入 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    
+    <!-- 核心库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary-blue: #2C3E50;
+            --warm-white: #F8F9FA;
+            --elegant-gray: #6C757D;
+            --wisdom-gold: #D4AF37;
+            --nature-green: #28A745;
+            --warm-orange: #FD7E14;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--warm-white) 0%, #E8F4F8 100%);
+            color: var(--primary-blue);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .serif-font {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        .decorative-font {
+            font-family: 'ZCOOL XiaoWei', cursive;
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            backdrop-filter: blur(10px);
+            background: rgba(248, 249, 250, 0.9);
+            border-bottom: 1px solid rgba(44, 62, 80, 0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--wisdom-gold);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--wisdom-gold);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* 筛选器样式 */
+        .filter-button {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(44, 62, 80, 0.2);
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--elegant-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .filter-button:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--wisdom-gold);
+            color: var(--wisdom-gold);
+        }
+        
+        .filter-button.active {
+            background: var(--wisdom-gold);
+            border-color: var(--wisdom-gold);
+            color: white;
+        }
+        
+        /* 案例卡片样式 */
+        .case-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(44, 62, 80, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: var(--wisdom-gold);
+        }
+        
+        .case-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .case-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 2px;
+        }
+        
+        .tag-investment { background: rgba(40, 167, 69, 0.1); color: #28A745; }
+        .tag-business { background: rgba(212, 175, 55, 0.1); color: #D4AF37; }
+        .tag-education { background: rgba(253, 126, 20, 0.1); color: #FD7E14; }
+        .tag-ai { background: rgba(108, 117, 125, 0.1); color: #6C757D; }
+        .tag-philosophy { background: rgba(44, 62, 80, 0.1); color: #2C3E50; }
+        
+        /* 时间轴样式 */
+        .timeline {
+            position: relative;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--wisdom-gold), var(--nature-green));
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: var(--wisdom-gold);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+        
+        .timeline-content {
+            width: 45%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            border: 1px solid rgba(44, 62, 80, 0.1);
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: 55%;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-right: 55%;
+        }
+        
+        /* 滚动动画 */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .fade-in-up.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 搜索框样式 */
+        .search-input {
+            border: 2px solid transparent;
+            background: rgba(248, 249, 250, 0.8);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            padding: 12px 20px;
+            font-size: 16px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--wisdom-gold);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+        
+        /* 背景动画 */
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.2;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item::before {
+                left: 20px;
+            }
+            
+            .timeline-content {
+                width: calc(100% - 60px);
+                margin-left: 60px !important;
+                margin-right: 0 !important;
+            }
+            
+            .case-card {
+                margin-bottom: 20px;
+            }
+        }
+        
+        /* 加载动画 */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(212, 175, 55, 0.3);
+            border-top: 3px solid var(--wisdom-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景动画画布 -->
+    <canvas id="background-canvas"></canvas>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar fixed top-0 w-full z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold text-lg">智</span>
+                </div>
+                <h1 class="serif-font text-xl font-bold text-gray-800">段永平智慧问答</h1>
+            </div>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="nav-link text-gray-700 hover:text-yellow-600 font-medium">首页</a>
+                <a href="philosophy.html" class="nav-link text-gray-700 hover:text-yellow-600 font-medium">理念详情</a>
+                <a href="cases.html" class="nav-link text-yellow-600 font-medium">案例库</a>
+                <a href="about.html" class="nav-link text-gray-700 hover:text-yellow-600 font-medium">关于</a>
+            </div>
+            
+            <!-- 移动端菜单按钮 -->
+            <button class="md:hidden p-2" id="mobile-menu-btn">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden mt-4 pb-4" id="mobile-menu">
+            <a href="index.html" class="block py-2 text-gray-700 hover:text-yellow-600">首页</a>
+            <a href="philosophy.html" class="block py-2 text-gray-700 hover:text-yellow-600">理念详情</a>
+            <a href="cases.html" class="block py-2 text-yellow-600">案例库</a>
+            <a href="about.html" class="block py-2 text-gray-700 hover:text-yellow-600">关于</a>
+        </div>
+    </nav>
+    
+    <!-- 主要内容区域 -->
+    <main class="pt-24 pb-16">
+        <div class="max-w-7xl mx-auto px-6">
+            <!-- 页面标题 -->
+            <div class="text-center mb-12 fade-in-up">
+                <h2 class="serif-font text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                    智慧案例库
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    探索段永平理念在实际投资、教育、企业经营中的成功应用案例，从中汲取智慧启发
+                </p>
+            </div>
+            
+            <!-- 搜索和筛选区域 -->
+            <div class="mb-12 fade-in-up">
+                <div class="flex flex-col md:flex-row gap-6 items-center justify-between">
+                    <!-- 搜索框 -->
+                    <div class="flex-1 max-w-md">
+                        <input 
+                            type="text" 
+                            id="search-input" 
+                            class="search-input w-full" 
+                            placeholder="搜索案例..."
+                        >
+                    </div>
+                    
+                    <!-- 筛选按钮 -->
+                    <div class="flex flex-wrap gap-2" id="filter-buttons">
+                        <button class="filter-button active" data-category="all">全部</button>
+                        <button class="filter-button" data-category="investment">投资理念</button>
+                        <button class="filter-button" data-category="business">企业经营</button>
+                        <button class="filter-button" data-category="education">教育理念</button>
+                        <button class="filter-button" data-category="ai">AI思考</button>
+                        <button class="filter-button" data-category="philosophy">人生哲学</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 案例展示区域 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16" id="cases-grid">
+                <!-- 案例卡片将通过JavaScript动态加载 -->
+            </div>
+            
+            <!-- 时间轴展示区域 -->
+            <div class="fade-in-up">
+                <h3 class="serif-font text-3xl font-bold text-center mb-12 text-gray-800">
+                    智慧发展历程
+                </h3>
+                <div class="timeline" id="timeline-container">
+                    <!-- 时间轴内容将通过JavaScript动态加载 -->
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="mb-6">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">智</span>
+                    </div>
+                    <h4 class="serif-font text-xl font-bold">段永平智慧问答</h4>
+                </div>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    传承智慧，启发思考。基于段永平先生的投资、教育、AI、企业经营理念，
+                    为每一位追求成长的人提供智慧指导。
+                </p>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-6">
+                <p class="text-gray-500 text-sm">
+                    © 2025 段永平智慧问答系统. 致敬智慧，传承思想.
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 案例数据
+        const casesData = [
+            {
+                id: 1,
+                title: "网易投资的智慧决策",
+                category: "investment",
+                summary: "2002年段永平投资网易，从每股0.8美元涨到100多美元，体现了'投资自己懂的企业'的理念。",
+                description: "2001年互联网泡沫破裂后，网易股价跌至历史低点。段永平通过深入研究，发现网易在游戏业务上的巨大潜力。他运用'不懂不做'的原则，深入了解网易的商业模式和管理团队，最终做出投资决策。这次投资不仅获得了丰厚的财务回报，更重要的是验证了他价值投资理念的正确性。",
+                image: "resources/investment_concept.png",
+                tags: ["价值投资", "长期持有", "企业研究"],
+                date: "2002-01-01",
+                impact: "投资回报率超过100倍",
+                lessons: [
+                    "深入研究企业基本面是投资成功的基础",
+                    "市场恐慌时往往是最好的投资机会",
+                    "要投资自己真正理解的企业",
+                    "长期持有优秀公司才能获得超额收益"
+                ]
+            },
+            {
+                id: 2,
+                title: "OPPO本分文化的建立",
+                category: "business",
+                summary: "段永平在OPPO建立'本分文化'，强调诚信、用户导向，成为企业长期发展的基石。",
+                description: "段永平创立OPPO时，将'本分'作为企业文化的核心。本分意味着诚实、专注、不投机取巧。在这种文化指导下，OPPO专注于为用户创造价值，不追求短期利益，而是着眼于长期发展。这种文化帮助OPPO在激烈的市场竞争中保持了稳健发展，赢得了用户的信任。",
+                image: "resources/wisdom_abstract_bg.png",
+                tags: ["企业文化", "本分", "用户导向"],
+                date: "2004-01-01",
+                impact: "成为全球知名消费电子品牌",
+                lessons: [
+                    "企业文化是企业长期成功的基石",
+                    "诚信是赢得用户信任的关键",
+                    "专注做好自己的事情，不投机取巧",
+                    "用户导向是企业发展的根本"
+                ]
+            },
+            {
+                id: 3,
+                title: "vivo技术创新之路",
+                category: "business",
+                summary: "vivo在段永平理念指导下，坚持技术创新和用户需求驱动，成为智能手机领域的佼佼者。",
+                description: "vivo继承了段永平的经营理念，坚持'技术服务于人'的原则。在产品开发中，vivo不盲目追求技术参数，而是关注用户的真实需求。通过持续的研发投入和对用户体验的重视，vivo在智能手机市场建立了良好的品牌声誉。",
+                image: "resources/misty_landscape.png",
+                tags: ["技术创新", "用户需求", "产品理念"],
+                date: "2009-01-01",
+                impact: "全球智能手机市场重要参与者",
+                lessons: [
+                    "技术创新要服务于用户需求",
+                    "产品要追求简单实用",
+                    "持续改进是创新的重要形式",
+                    "用户体验是产品成功的关键"
+                ]
+            },
+            {
+                id: 4,
+                title: "子女教育的智慧实践",
+                category: "education",
+                summary: "段永平在子女教育中践行以身作则、培养独立思考的理念，取得了良好的教育成果。",
+                description: "段永平在子女教育中，不采用传统的说教方式，而是通过自己的行为来影响孩子。他鼓励孩子独立思考，培养批判性思维能力。在财商教育方面，他让孩子理解钱的价值，学会理性消费。这种教育方式培养了孩子的独立性和责任感。",
+                image: "resources/chinese_calligraphy.png",
+                tags: ["家庭教育", "独立思考", "以身作则"],
+                date: "1990-01-01",
+                impact: "子女健康成长，具备独立思考能力",
+                lessons: [
+                    "父母的行为是最好的教育",
+                    "要培养孩子的独立思考能力",
+                    "品德教育比知识教育更重要",
+                    "财商教育要从小开始"
+                ]
+            },
+            {
+                id: 5,
+                title: "对AI技术的理性思考",
+                category: "ai",
+                summary: "段永平认为AI是工具，应该服务于人，保持人性关怀，体现了对技术发展的深度思考。",
+                description: "面对AI技术的快速发展，段永平保持了理性的态度。他认为AI本质上是一种工具，应该为人类服务，而不是替代人类。他强调在AI应用中要保持人性的温度，关注用户的真实需求。同时，他也提醒要谨慎发展AI技术，考虑伦理和安全问题。",
+                image: "resources/wisdom_abstract_bg.png",
+                tags: ["AI思考", "技术伦理", "人性关怀"],
+                date: "2020-01-01",
+                impact: "为AI技术发展提供了重要参考",
+                lessons: [
+                    "AI是工具，应该服务于人",
+                    "技术发展要保持人性关怀",
+                    "要理性看待技术进步",
+                    "技术伦理是发展的重要考虑因素"
+                ]
+            },
+            {
+                id: 6,
+                title: "简单生活的人生实践",
+                category: "philosophy",
+                summary: "段永平践行简单生活理念，在物质丰富的时代保持内心的平静和专注。",
+                description: "尽管取得了巨大的商业成功，段永平始终保持简单的生活方式。他不追求奢华的物质享受，而是注重内心的满足和精神的成长。这种生活态度让他能够专注于自己真正热爱的事业，保持清晰的思考能力。",
+                image: "resources/misty_landscape.png",
+                tags: ["简单生活", "人生哲学", "精神成长"],
+                date: "1980-01-01",
+                impact: "保持内心的平静和专注",
+                lessons: [
+                    "简单生活让人更专注于重要的事情",
+                    "幸福不在于拥有多少，而在于内心的满足",
+                    "要珍惜当下，活在当下",
+                    "精神成长比物质追求更重要"
+                ]
+            },
+            {
+                id: 7,
+                title: "苹果公司的投资洞察",
+                category: "investment",
+                summary: "段永平对苹果公司的投资体现了对企业护城河和长期价值的深刻理解。",
+                description: "段永平投资苹果公司的决策基于对该公司护城河的深刻理解。他认识到苹果不仅仅是一个硬件公司，而是一个生态系统。苹果的品牌价值、用户粘性、创新能力构成了强大的护城河。这种洞察力让他能够在苹果股价低迷时坚定持有。",
+                image: "resources/investment_concept.png",
+                tags: ["护城河", "品牌价值", "长期价值"],
+                date: "2011-01-01",
+                impact: "验证了对企业护城河的深刻理解",
+                lessons: [
+                    "要理解企业的护城河在哪里",
+                    "品牌价值是重要的竞争优势",
+                    "生态系统比单一产品更有价值",
+                    "用户粘性是企业成功的重要因素"
+                ]
+            },
+            {
+                id: 8,
+                title: "步步高品牌发展历程",
+                category: "business",
+                summary: "步步高从一个小企业发展成为知名品牌，体现了段永平企业经营理念的实践成功。",
+                description: "步步高从一个小型电子企业发展成为知名品牌，体现了段永平企业经营理念的成功实践。在企业发展过程中，始终坚持用户导向，专注于产品质量和技术创新。通过建立良好的企业文化和品牌形象，步步高在激烈的市场竞争中脱颖而出。",
+                image: "resources/wisdom_abstract_bg.png",
+                tags: ["品牌建设", "质量管理", "技术创新"],
+                date: "1995-01-01",
+                impact: "成为中国知名消费电子品牌",
+                lessons: [
+                    "品牌建设需要长期坚持",
+                    "产品质量是企业生存的根本",
+                    "技术创新要有用户导向",
+                    "企业文化是品牌的重要组成部分"
+                ]
+            }
+        ];
+
+        // 时间轴数据
+        const timelineData = [
+            {
+                year: "1980s",
+                title: "创业初期",
+                description: "段永平开始创业，建立了对商业的基本认知",
+                category: "philosophy"
+            },
+            {
+                year: "1995",
+                title: "步步高创立",
+                description: "创立步步高，开始实践企业经营理念",
+                category: "business"
+            },
+            {
+                year: "2001",
+                title: "投资网易",
+                description: "投资网易，体现了价值投资理念",
+                category: "investment"
+            },
+            {
+                year: "2004",
+                title: "OPPO创立",
+                description: "创立OPPO，建立本分企业文化",
+                category: "business"
+            },
+            {
+                year: "2009",
+                title: "vivo品牌",
+                description: "vivo品牌独立运营，技术创新理念实践",
+                category: "business"
+            },
+            {
+                year: "2011",
+                title: "投资苹果",
+                description: "投资苹果公司，验证护城河理论",
+                category: "investment"
+            },
+            {
+                year: "2020",
+                title: "AI思考",
+                description: "对AI技术发展提出理性思考",
+                category: "ai"
+            }
+        ];
+
+        // 全局变量
+        let currentFilter = 'all';
+        let filteredCases = casesData;
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+        });
+
+        function initializePage() {
+            // 初始化背景动画
+            initBackgroundAnimation();
+            
+            // 初始化案例展示
+            initCasesGrid();
+            
+            // 初始化时间轴
+            initTimeline();
+            
+            // 初始化搜索功能
+            initSearchFunction();
+            
+            // 初始化筛选功能
+            initFilterFunction();
+            
+            // 初始化导航功能
+            initNavigation();
+            
+            // 初始化滚动动画
+            initScrollAnimations();
+        }
+
+        // 背景动画初始化
+        function initBackgroundAnimation() {
+            const canvas = document.getElementById('background-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            let time = 0;
+            
+            function drawBackground() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 创建流动的线条效果
+                for (let i = 0; i < 5; i++) {
+                    const startX = Math.sin(time * 0.01 + i) * 100;
+                    const startY = Math.cos(time * 0.008 + i) * 80 + canvas.height / 2;
+                    const endX = canvas.width - startX;
+                    const endY = canvas.height - startY;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    ctx.strokeStyle = `rgba(212, 175, 55, ${0.1 + Math.sin(time * 0.01) * 0.05})`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+                
+                time++;
+                requestAnimationFrame(drawBackground);
+            }
+            
+            drawBackground();
+        }
+
+        // 初始化案例网格
+        function initCasesGrid() {
+            renderCases(casesData);
+        }
+
+        // 渲染案例
+        function renderCases(cases) {
+            const container = document.getElementById('cases-grid');
+            
+            if (cases.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-gray-500 text-lg mb-4">没有找到相关案例</div>
+                        <div class="text-gray-400">请尝试其他搜索条件</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = cases.map(caseItem => `
+                <div class="case-card fade-in-up" data-case-id="${caseItem.id}">
+                    <img src="${caseItem.image}" alt="${caseItem.title}" class="case-image">
+                    <div class="p-6">
+                        <div class="mb-3">
+                            ${caseItem.tags.map(tag => `
+                                <span class="case-tag tag-${caseItem.category}">${tag}</span>
+                            `).join('')}
+                        </div>
+                        
+                        <h3 class="serif-font text-xl font-bold text-gray-800 mb-3">
+                            ${caseItem.title}
+                        </h3>
+                        
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                            ${caseItem.summary}
+                        </p>
+                        
+                        <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                            <span>${caseItem.date}</span>
+                            <span>影响：${caseItem.impact}</span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <button class="text-yellow-600 hover:text-yellow-700 text-sm font-medium transition-colors" onclick="viewCaseDetail(${caseItem.id})">
+                                查看详情 →
+                            </button>
+                            <button class="text-gray-500 hover:text-gray-700 text-sm transition-colors" onclick="shareCase(${caseItem.id})">
+                                📤 分享
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // 重新初始化滚动动画
+            initScrollAnimations();
+        }
+
+        // 初始化时间轴
+        function initTimeline() {
+            const container = document.getElementById('timeline-container');
+            
+            container.innerHTML = timelineData.map((item, index) => `
+                <div class="timeline-item fade-in-up" style="animation-delay: ${index * 0.1}s">
+                    <div class="timeline-content">
+                        <div class="flex items-center mb-3">
+                            <span class="text-2xl font-bold text-yellow-600 mr-3">${item.year}</span>
+                            <div class="w-3 h-3 bg-yellow-600 rounded-full"></div>
+                        </div>
+                        
+                        <h4 class="serif-font text-lg font-bold text-gray-800 mb-2">
+                            ${item.title}
+                        </h4>
+                        
+                        <p class="text-gray-600 text-sm leading-relaxed mb-3">
+                            ${item.description}
+                        </p>
+                        
+                        <span class="case-tag tag-${item.category}">
+                            ${getCategoryName(item.category)}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 获取分类名称
+        function getCategoryName(category) {
+            const names = {
+                'investment': '投资理念',
+                'business': '企业经营',
+                'education': '教育理念',
+                'ai': 'AI思考',
+                'philosophy': '人生哲学'
+            };
+            return names[category] || category;
+        }
+
+        // 初始化搜索功能
+        function initSearchFunction() {
+            const searchInput = document.getElementById('search-input');
+            
+            searchInput.addEventListener('input', debounce((e) => {
+                const query = e.target.value.toLowerCase().trim();
+                filterCases(query, currentFilter);
+            }, 300));
+        }
+
+        // 初始化筛选功能
+        function initFilterFunction() {
+            const filterButtons = document.querySelectorAll('.filter-button');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // 更新按钮状态
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // 更新筛选条件
+                    currentFilter = button.dataset.category;
+                    const query = document.getElementById('search-input').value.toLowerCase().trim();
+                    filterCases(query, currentFilter);
+                });
+            });
+        }
+
+        // 筛选案例
+        function filterCases(query, category) {
+            let filtered = casesData;
+            
+            // 按分类筛选
+            if (category !== 'all') {
+                filtered = filtered.filter(caseItem => caseItem.category === category);
+            }
+            
+            // 按搜索关键词筛选
+            if (query) {
+                filtered = filtered.filter(caseItem => 
+                    caseItem.title.toLowerCase().includes(query) ||
+                    caseItem.summary.toLowerCase().includes(query) ||
+                    caseItem.tags.some(tag => tag.toLowerCase().includes(query)) ||
+                    caseItem.description.toLowerCase().includes(query)
+                );
+            }
+            
+            filteredCases = filtered;
+            renderCases(filtered);
+        }
+
+        // 查看案例详情
+        function viewCaseDetail(caseId) {
+            const caseItem = casesData.find(c => c.id === caseId);
+            if (!caseItem) return;
+            
+            // 创建模态框显示详情
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-6">
+                            <h2 class="serif-font text-3xl font-bold text-gray-800">${caseItem.title}</h2>
+                            <button onclick="closeModal(this)" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+                        </div>
+                        
+                        <img src="${caseItem.image}" alt="${caseItem.title}" class="w-full h-64 object-cover rounded-xl mb-6">
+                        
+                        <div class="mb-6">
+                            ${caseItem.tags.map(tag => `
+                                <span class="case-tag tag-${caseItem.category}">${tag}</span>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="prose max-w-none">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">案例概述</h3>
+                            <p class="text-gray-600 leading-relaxed mb-6">${caseItem.description}</p>
+                            
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">核心启示</h3>
+                            <ul class="space-y-2 mb-6">
+                                ${caseItem.lessons.map(lesson => `
+                                    <li class="flex items-start space-x-2">
+                                        <span class="w-2 h-2 bg-yellow-600 rounded-full mt-2 flex-shrink-0"></span>
+                                        <span class="text-gray-600">${lesson}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                            
+                            <div class="bg-gray-50 rounded-xl p-6">
+                                <h4 class="font-bold text-gray-800 mb-2">案例影响</h4>
+                                <p class="text-gray-600">${caseItem.impact}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-center space-x-4 mt-8">
+                            <button onclick="shareCase(${caseItem.id})" class="bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 transition-colors">
+                                分享案例
+                            </button>
+                            <button onclick="copyCaseLink(${caseItem.id})" class="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                复制链接
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // 点击背景关闭
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal(modal);
+                }
+            });
+        }
+
+        // 关闭模态框
+        function closeModal(element) {
+            const modal = element.closest('.fixed');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
+        }
+
+        // 分享案例
+        function shareCase(caseId) {
+            const caseItem = casesData.find(c => c.id === caseId);
+            if (!caseItem) return;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: caseItem.title,
+                    text: caseItem.summary,
+                    url: `${window.location.origin}${window.location.pathname}?case=${caseId}`
+                });
+            } else {
+                copyToClipboard(`${caseItem.title}\n${caseItem.summary}\n${window.location.origin}${window.location.pathname}?case=${caseId}`);
+                showToast('已复制到剪贴板');
+            }
+        }
+
+        // 复制案例链接
+        function copyCaseLink(caseId) {
+            const url = `${window.location.origin}${window.location.pathname}?case=${caseId}`;
+            copyToClipboard(url);
+            showToast('链接已复制到剪贴板');
+        }
+
+        // 复制到剪贴板
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            });
+        }
+
+        // 显示提示
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 right-6 bg-yellow-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 2000);
+        }
+
+        // 防抖函数
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // 导航功能初始化
+        function initNavigation() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        }
+
+        // 滚动动画初始化
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.fade-in-up').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // 检查URL参数
+        function checkURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const caseId = urlParams.get('case');
+            
+            if (caseId) {
+                viewCaseDetail(parseInt(caseId));
+            }
+        }
+
+        // 页面加载完成后检查URL参数
+        window.addEventListener('load', checkURLParams);
+    </script>
+</body>
+</html>
